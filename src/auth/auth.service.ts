@@ -4,7 +4,7 @@ import RegisterDto from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from 'src/users/entities/user.entity';
 import { SigninDto } from './dto/signin.dto';
-import { JwtPayload } from './dto/jwt-payload.interface';
+import { JwtPayload } from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { SignInResponseDto } from './dto/signin-response.dto';
 

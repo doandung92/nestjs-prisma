@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import RegisterDto from 'src/auth/dto/register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -21,5 +19,10 @@ export class UsersService {
     return await this.prismaService.user.findUnique({
       where: { username },
     });
+  }
+
+  public async findAll(): Promise<User[]> {
+    const users = await this.prismaService.user.findMany({});
+    return plainToClass(User, users);
   }
 }

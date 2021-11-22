@@ -3,9 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { PrismaExceptionFilter } from './filters/prisma-exception.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from './auth/guards/jwt-auth-guard';
 
 @Module({
   imports: [UsersModule, AuthModule],
@@ -23,6 +25,10 @@ import { TransformInterceptor } from './interceptors/transform.interceptor';
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
 })

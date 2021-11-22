@@ -3,8 +3,10 @@ import { User } from 'src/users/entities/user.entity';
 import { AuthService } from './auth.service';
 import RegisterDto from './dto/register.dto';
 import { SigninDto } from './dto/signin.dto';
+import { Public } from './guards/public.decorator';
 
 @Controller('auth')
+@Public()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
