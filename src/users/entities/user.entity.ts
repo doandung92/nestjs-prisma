@@ -6,4 +6,7 @@ export class User {
 
   @Exclude({ toPlainOnly: true })
   password?: string;
+
+  isAdmin: boolean;
+  roles?: string[] = [];
 }

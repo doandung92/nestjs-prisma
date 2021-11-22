@@ -1,7 +1,8 @@
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
+  id       Int     @id @default(autoincrement())
+  username String  @unique
   password String
+  isAdmin  Boolean @default(false)
 
   @@map("app_user")
 }

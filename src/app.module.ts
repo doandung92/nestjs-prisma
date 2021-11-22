@@ -7,7 +7,8 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { PrismaExceptionFilter } from './filters/prisma-exception.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtAuthGuard } from './auth/guards/jwt-auth-guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RolesGuard } from './auth/guards/roles.guard';
 
 @Module({
   imports: [UsersModule, AuthModule],
@@ -29,6 +30,10 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth-guard';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })
