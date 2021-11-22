@@ -11,38 +11,15 @@ export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
   public async register(registerDto: RegisterDto): Promise<User> {
-    return await this.prismaService.user.create({
+    const user = await this.prismaService.user.create({
       data: { ...registerDto },
-      select: {
-        id: true,
-        username: true,
-      },
     });
+    return plainToClass(User, user);
   }
 
-  public async findByUsername(username: string) {
+  public async findByUsername(username: string): Promise<User> {
     return await this.prismaService.user.findUnique({
       where: { username },
     });
-  }
-
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
-  findAll() {
-    return `This action returns all users`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }
