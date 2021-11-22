@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user: User = await this.userService.findByUsername(username);
 
     if (!user) throw new UnauthorizedException();
-
+    user.roles = [];
     // This is just a demo of role assignation. Not the real implemetation
     if (user.isAdmin || user.username === 'admin') user.roles = [ROLES.ADMIN];
 

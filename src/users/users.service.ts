@@ -34,4 +34,12 @@ export class UsersService {
     if (!user) throw new UserNotFoundException(id);
     return plainToClass(User, user);
   }
+
+  public async deleteUserById(id: number) {
+    const user = await this.prismaService.user.delete({
+      where: { id },
+    });
+
+    return plainToClass(User, user);
+  }
 }

@@ -1,5 +1,11 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
-import { Public } from 'src/auth/guards/public.decorator';
+import {
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { Roles } from 'src/auth/guards/roles.decorator';
 import { ROLES } from 'src/auth/guards/roles.enum';
 import { GetUser } from 'src/config/decorators/get-user.decorator';
@@ -21,8 +27,14 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
   ) {
-    console.log(user);
-
+    if (user.id !== id && !user.roles.includes(ROLES.ADMIN))
+      throw new ForbiddenException();
     return this.usersService.findById(id);
+  }
+
+  @Delete('/:id')
+  @Roles(ROLES.ADMIN)
+  public deleteUser(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.deleteUserById(id);
   }
 }
