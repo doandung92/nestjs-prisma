@@ -16,13 +16,9 @@ export class AuthService {
   ) {}
 
   public async register(registerDto: RegisterDto): Promise<User> {
-    const { username, password } = registerDto;
-    const saltLength = 10;
-    const salt = await bcrypt.genSalt(saltLength);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    return this.usersService.register({ username, password: hashedPassword });
+    return this.usersService.register(registerDto);
   }
+
   public async signin(signinDto: SigninDto): Promise<SignInResponseDto> {
     const { username, password } = signinDto;
     const user = await this.usersService.findByUsername(username);
@@ -34,5 +30,11 @@ export class AuthService {
     } else {
       throw new UnauthorizedException('Please check your login credentials');
     }
+  }
+
+  public async getHashedPassword(password: string): Promise<string> {
+    const saltLength = 10;
+    const salt = await bcrypt.genSalt(saltLength);
+    return await bcrypt.hash(password, salt);
   }
 }

@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import RegisterDto from 'src/auth/dto/register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 import { UserNotFoundException } from './exceptions/user-notfound.exception';
 
 @Injectable()
@@ -10,8 +12,10 @@ export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
   public async register(registerDto: RegisterDto): Promise<User> {
+    const { username, password } = registerDto;
+    const hashedPassword = await this.getHashedPassword(password);
     const user = await this.prismaService.user.create({
-      data: { ...registerDto },
+      data: { username, password: hashedPassword },
     });
     return plainToClass(User, user);
   }
@@ -41,5 +45,21 @@ export class UsersService {
     });
 
     return plainToClass(User, user);
+  }
+
+  public async updateUser(updateUserDto: UpdateUserDto) {
+    const { password } = updateUserDto;
+    const hashedPassword = await this.getHashedPassword(password);
+    const user = await this.prismaService.user.update({
+      where: { id: updateUserDto.id },
+      data: { password: hashedPassword },
+    });
+    return plainToClass(User, user);
+  }
+
+  private async getHashedPassword(password: string): Promise<string> {
+    const saltLength = 10;
+    const salt = await bcrypt.genSalt(saltLength);
+    return await bcrypt.hash(password, salt);
   }
 }
