@@ -6,6 +6,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserNotFoundException } from './exceptions/user-notfound.exception';
+import { Prisma } from '.prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -49,10 +50,14 @@ export class UsersService {
 
   public async updateUser(updateUserDto: UpdateUserDto) {
     const { password } = updateUserDto;
-    const hashedPassword = await this.getHashedPassword(password);
+    const updateData: Prisma.UserUpdateInput = {};
+    if (password) {
+      const hashedPassword = await this.getHashedPassword(password);
+      updateData.password = hashedPassword;
+    }
     const user = await this.prismaService.user.update({
       where: { id: updateUserDto.id },
-      data: { password: hashedPassword },
+      data: updateData,
     });
     return plainToClass(User, user);
   }
